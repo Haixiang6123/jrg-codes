@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 if [ -d $1 ]; then
     # Handle file exits error
     echo 'error: dir exits'
