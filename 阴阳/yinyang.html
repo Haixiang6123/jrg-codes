@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Yin Yang Demo</title>
+
+    <style>
+        #yin-yang {
+            position: relative;
+            width: 96px;
+            height: 48px;
+            border-style: solid;
+            border-color: #41B883;
+            border-width: 2px 2px 50px 2px;
+            border-radius: 50%;
+        }
+
+        #yin-yang::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            height: 12px;
+            width: 12px;
+            border: 18px solid #41B883;
+            border-radius: 50%;
+            background: white;
+        }
+        #yin-yang::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: 0;
+            height: 12px;
+            width: 12px;
+            border: 18px solid white;
+            border-radius: 50%;
+            background: #41B883;
+        }
+    </style>
+</head>
+<body>
+    <div id="yin-yang">
+    
+    </div>
+</body>
+</html>
