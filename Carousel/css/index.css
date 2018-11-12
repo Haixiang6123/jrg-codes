@@ -1,0 +1,14 @@
+.window {
+    width: 300px;
+    overflow: hidden;
+}
+
+.images {
+    display: flex;
+    align-items: center;
+    transition: transform .5s;
+}
+
+.red {
+    color: red
+}
