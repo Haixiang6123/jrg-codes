@@ -1,42 +1,43 @@
-let $buttons = $('#button-group button')
-let size = $buttons.length
-let timeId = -1
+let n = 0
 
-function activeButton($button) {
-    $button.addClass('red').siblings('.red').removeClass('red')
+function init() {
+    getSlide(n).addClass('current')
+        .siblings().addClass('enter')
 }
 
-function playSlide(index) {
-    $buttons.eq(index).trigger('click')
+function makeCurrent($node) {
+    return $node.removeClass('enter leave').addClass('current')
 }
 
-function autoPlaySlide() {
-    playSlide(size % 3)
-    return setInterval(() => {
-        size += 1
-        playSlide(size % 3)
-    }, 2000)
+function makeLeave($node) {
+    return $node.removeClass('enter current').addClass('leave')
+}
+function makeEnter($node) {
+    return $node.removeClass('leave current').addClass('enter')
 }
 
-for (let i = 0; i < $buttons.length; i++) {
-    $($buttons[i]).on('click', function (event) {
-        let index = $(event.currentTarget).index()
-        let offset = index * -300
+function getSlide(n) {
+    return $(`.images > div:nth-child(${findIndex(n)})`)
+}
 
-        $(images).css({
-            transform: `translateX(${offset}px)`
+function findIndex(n) {
+    return n % 3 + 1
+}
+
+// Initialize classes
+init()
+
+// Set clock
+setInterval(() => {
+    // Leave current window
+    makeLeave(getSlide(n))
+        .one('transitionend', (event) => {
+            // Make it to enter state when it finishes the transition
+            makeEnter($(event.currentTarget))
         })
-        size = index
-        activeButton($buttons.eq(size))
-    })
-}
 
-timeId = autoPlaySlide()
+    // Next slide will get into the window
+    makeCurrent(getSlide(n + 1))
 
-$('#window').on('mouseenter', function () {
-    window.clearInterval(timeId)
-})
-
-$('#window').on('mouseleave', function () {
-    timeId = autoPlaySlide()
-})
+    n += 1
+}, 2000)
