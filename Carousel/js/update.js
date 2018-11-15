@@ -65,18 +65,18 @@ function gotoSlide(index) {
 let timer = 0
 
 function autoPlay() {
-    return timer = setInterval(() => {
+    return setInterval(() => {
         gotoSlide(curSlide + 1)
     }, 1000)
 }
 
-$(next).on('click', function() {
-    gotoSlide(curSlide + 1)
-})
-
-$(prev).on('click', function() {
-    gotoSlide(curSlide - 1)
-})
+// $(next).on('click', function() {
+//     gotoSlide(curSlide + 1)
+// })
+//
+// $(prev).on('click', function() {
+//     gotoSlide(curSlide - 1)
+// })
 
 makeFakeSlides()
 
@@ -91,4 +91,12 @@ $('.container').on('mouseenter', function() {
 
 $('.container').on('mouseleave', function() {
     timer = autoPlay()
+})
+
+document.addEventListener('visibilitychange', function () {
+    if (document.hidden) {
+        window.clearInterval(timer)
+    } else {
+        timer = autoPlay()
+    }
 })

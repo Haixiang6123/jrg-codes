@@ -7,11 +7,19 @@
     box-sizing: border-box;
 }
 
+body {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .container {
     width: 500px;
     height: 300px;
-    margin: 20px auto;
     overflow: hidden;
+    position: relative;
+    border-radius: 6px;
 }
 
 .images {
@@ -31,8 +39,22 @@
 
 .btn-group,
 .controls {
+    position: absolute;
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
     text-align: center;
+    left: 40%;
+    right: 40%;
+    bottom: 0;
+}
+
+.btn-group button {
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    height: 10px;
+    width: 10px;
+    margin-bottom: 10px;
+    border-radius: 50%;
+    cursor: pointer;
 }
