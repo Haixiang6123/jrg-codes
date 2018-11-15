@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        .popover {
+            display: none;
+            border: 1px solid red;
+            position: absolute;
+            left: 100%;
+            top: 0;
+            white-space: nowrap;
+            padding: 10px;
+            margin-left: 10px;
+        }
+
+        .popover::before {
+            position: absolute;
+            right: 100%;
+            top: 5px;
+            border: 10px solid transparent;
+            border-right-color: red;
+            content: '';
+        }
+
+        .popover::after {
+            position: absolute;
+            right: 100%;
+            top: 5px;
+            border: 10px solid transparent;
+            border-right-color: white;
+            content: '';
+            margin-right: -1px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="wrapper" class="wrapper">
+    <button id="btn">Click</button>
+    <div class="popover" id="popover">
+        内容
+    </div>
+</div>
+
+<script src="jquery.js"></script>
+<script>
+    $(btn).on('click', function () {
+        $(popover).show()
+
+        setTimeout(() => {
+            $(document).one('click', function () {
+                $(popover).hide()
+            })
+        }, 0);
+    })
+
+    $(wrapper).on('click', function (event) {
+        event.stopPropagation()
+    })
+</script>
+</body>
+</html>
