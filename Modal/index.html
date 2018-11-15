@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <style>
+        .red.active {
+            background: red;
+        }
+
+        .green.active {
+            background: green;
+        }
+
+        .yellow.active {
+            background: yellow;
+        }
+
+        .orange.active {
+            background: orange;
+        }
+
+        div {
+            min-height: 200px;
+            border: 1px solid black;
+            padding: 10px;
+            transition: all 1s;
+        }
+    </style>
+</head>
+
+<body>
+<div class="red">
+    <div class="green">
+        <div class="yellow">
+            <div class="orange"></div>
+        </div>
+    </div>
+</div>
+
+    <script src="jquery.js"></script>
+    <script>
+        let n = 0
+        $('div').on('click', function (event) {
+            setTimeout(function () {
+                $(event.currentTarget).addClass('active')
+            }, n * 1000)
+            n += 1
+        })
+    </script>
+</body>
+
+</html>
