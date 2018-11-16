@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -8,6 +9,7 @@
             position: relative;
             display: inline-block;
         }
+
         .popover {
             display: none;
             border: 1px solid red;
@@ -39,30 +41,47 @@
         }
     </style>
 </head>
+
 <body>
 
-<div id="wrapper" class="wrapper">
-    <button id="btn">Click</button>
-    <div class="popover" id="popover">
-        内容
+    <div id="wrapper" class="wrapper">
+        <button id="btn">Click</button>
+        <div class="popover" id="popover">
+            内容
+        </div>
     </div>
-</div>
 
-<script src="jquery.js"></script>
-<script>
-    $(btn).on('click', function () {
-        $(popover).show()
-
-        setTimeout(() => {
-            $(document).one('click', function () {
+    <script src="jquery.js"></script>
+    <script>
+        let isShow = false
+        $(btn).on('click', function () {
+            if (isShow) {
                 $(popover).hide()
-            })
-        }, 0);
-    })
+                isShow = false
 
-    $(wrapper).on('click', function (event) {
-        event.stopPropagation()
-    })
-</script>
+                setTimeout(() => {
+                    $(document).one('click', function () {
+                        $(popover).show()
+                        isShow = true
+                    })
+                }, 0);
+            } else {
+                $(popover).show()
+                isShow = true
+
+                setTimeout(() => {
+                    $(document).one('click', function () {
+                        $(popover).hide()
+                        isShow = false
+                    })
+                }, 0);
+            }
+        })
+
+        $(wrapper).on('click', function (event) {
+            event.stopPropagation()
+        })
+    </script>
 </body>
+
 </html>
