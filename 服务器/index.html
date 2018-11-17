@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Document</title>
+</head>
+
+<body>
+	<h5>你的账号余额是 <span id="amount">&&&amount&&&</span> </h5>
+
+	<form action="/pay" method="post" target="result">
+		<input type="text" name="number" value="1">
+		<input type="submit" value="Pay">
+	</form>
+
+	<button id="button">CLick∆</button>
+
+	<script src="https://code.jquery.com/jquery-3.1.0.js"></script>
+	<script>
+		button.addEventListener('click', (e) => {
+$.ajax({
+	url: 'http://localhost:8002/pay',
+	dataType: 'jsonp',
+	success: function (response) {
+		console.log(response)
+		alert('这是8002写的前端代码')
+		alert('我得到的结果是' + response.success)
+	}
+})
+let script = document.createElement('script')
+let functionName = 'yes' + parseInt(Math.random() * 100, 10)
+window[functionName] = function (result) {
+	alert('这是8002写的前端代码')
+	alert('我得到的结果是' + result.success)
+}
+
+script.src = `http://localhost:8002/pay?callback=${functionName}`
+
+document.body.appendChild(script)
+
+script.onload = function (e) {
+	e.currentTarget.remove()
+	delete window[functionName]
+}
+script.onerror = function () {
+	e.currentTarget.remove()
+	delete window[functionName]
+}
+		})
+	</script>
+</body>
+
+</html>
