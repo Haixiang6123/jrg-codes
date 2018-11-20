@@ -1,4 +1,11 @@
-mybutton.addEventListener('click', () => {
+window.xQuery = function(nodeOrSelector) {
+    let nodes = {}
+    nodes.addClass = function () { }
+    nodes.html = function () { }
+    return nodes
+}
+
+window.xQuery.ajax = function({url, success, fail, method, body, headers}) {
     // 声明 XMLHttpRequest
     let request = new XMLHttpRequest()
 
@@ -6,19 +13,39 @@ mybutton.addEventListener('click', () => {
     request.onreadystatechange = () => {
         if (request.readyState === 4) {
             if (request.status >= 200 && request.status < 300) {
-                let string = request.responseText
-                let object = JSON.parse(string)
-                console.log(object)
+                success.call(undefined, request.responseText)
             }
             else if (request.status >= 400) {
-                console.log('请求失败')
+                fail.call(undefined, request)
             }
         }
     }
 
     // 配置 request
-    request.open('GET', 'http://localhost:8002/xxx')
+    request.open(method, url)
+
+    // 配置 request headers
+    for (let key in headers) {
+        request.setRequestHeader(key, headers[key])
+    }
 
     // 发送请求
-    request.send()
+    request.send(body)
+}
+
+mybutton.addEventListener('click', () => {
+    window.xQuery.ajax({
+        url: '/xxx',
+        method: 'POST',
+        body: 'a=1&b=2',
+        headers: {
+            'content-type': 'x-www-form-urlencoded',
+        },
+        success: (text) => {
+            console.log(text)
+        },
+        fail: (req) => {
+            console.log(req.status)
+        }
+    })
 })
