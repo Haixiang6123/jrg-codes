@@ -5,32 +5,34 @@ window.xQuery = function(nodeOrSelector) {
     return nodes
 }
 
-window.xQuery.ajax = function({url, success, fail, method, body, headers}) {
-    // 声明 XMLHttpRequest
-    let request = new XMLHttpRequest()
+window.xQuery.ajax = function({url, method, body, headers}) {
+    return new Promise(function (resolve, reject) {
+        // 声明 XMLHttpRequest
+        let request = new XMLHttpRequest()
 
-    // 监听
-    request.onreadystatechange = () => {
-        if (request.readyState === 4) {
-            if (request.status >= 200 && request.status < 300) {
-                success.call(undefined, request.responseText)
-            }
-            else if (request.status >= 400) {
-                fail.call(undefined, request)
+        // 监听
+        request.onreadystatechange = () => {
+            if (request.readyState === 4) {
+                if (request.status >= 200 && request.status < 300) {
+                   resolve.call(undefined, request.responseText)
+                }
+                else if (request.status >= 400) {
+                    reject.call(undefined, request)
+                }
             }
         }
-    }
 
-    // 配置 request
-    request.open(method, url)
+        // 配置 request
+        request.open(method, url)
 
-    // 配置 request headers
-    for (let key in headers) {
-        request.setRequestHeader(key, headers[key])
-    }
+        // 配置 request headers
+        for (let key in headers) {
+            request.setRequestHeader(key, headers[key])
+        }
 
-    // 发送请求
-    request.send(body)
+        // 发送请求
+        request.send(body)
+    })
 }
 
 mybutton.addEventListener('click', () => {
@@ -41,11 +43,8 @@ mybutton.addEventListener('click', () => {
         headers: {
             'content-type': 'x-www-form-urlencoded',
         },
-        success: (text) => {
-            console.log(text)
-        },
-        fail: (req) => {
-            console.log(req.status)
-        }
-    })
+    }).then(
+        (responseText) => {console.log('success', responseText)},
+        (request) => {console.log('error', request)}
+    )
 })
