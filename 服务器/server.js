@@ -1,7 +1,9 @@
 var http = require('http')
 var fs = require('fs')
 var url = require('url')
+var md5 = require('md5')
 var port = process.argv[2]
+let sessions = {}
 
 if (!port) {
     console.log('请指定端口号好不啦？\nnode server.js 8888 这样不会吗？')
@@ -31,11 +33,37 @@ var server = http.createServer(function (request, response) {
 
     console.log(path)
 
-    if (path === '/') {
+    if (path === '/js/main.js') {
+        let string = fs.readFileSync('js/main.js', 'utf8')
+        response.setHeader('Content-Type', 'application/javascript;charset=utf9')
+        let fileMd5 = md5(string)
+        // response.setHeader('Cache-Control', 'max-age=30')
+        // response.setHeader('Expires', 'Wed, 28 Nov 2018 05:31:09 GMT')
+        if (request.headers['if-none-match'] === fileMd5) {
+            console.log('没有响应体')
+            response.statusCode = 304
+        }
+        else {
+            response.setHeader('ETag', fileMd5)
+            response.write(string)
+        }
+        response.end()
+    }
+    else if (path === '/css/default.css') {
+        let string = fs.readFileSync('css/default.css', 'utf8')
+        response.setHeader('Last-Modified', 'Wed, 28 Nov 2018 05:31:09 GMT')
+        // response.setHeader('Content-Type', 'text/css;charset=utf9')
+        response.write(string)
+        response.end()
+    }
+    else if (path === '/') {
         let string = fs.readFileSync('./ajax.html', 'utf8')
 
         // ['email=1@', 'a=1', 'b=2']
-        let cookies = request.headers.cookie.split('; ')
+        let cookies = ''
+        if (request.headers.cookie) {
+            cookies = request.headers.cookie.split('; ')
+        }
         let hash = {}
         for (let i = 0; i < cookies.length; i++) {
             let parts = cookies[i].split('=')
@@ -43,8 +71,8 @@ var server = http.createServer(function (request, response) {
             let value = parts[1]
             hash[key] = value
         }
-
-        let email = hash.sign_in_email
+        // let email = sessions[hash.sessionid].sign_in_email
+        let email = 'haixiang6123@gmail.com'
         let users = fs.readFileSync('./db/users', 'utf8')
         users = JSON.parse(users)
         let foundUser = null
@@ -90,8 +118,6 @@ var server = http.createServer(function (request, response) {
                 password,
                 password_confirm
             } = hash
-
-            console.log(email, password, password_confirm)
 
             if (email.indexOf('@') === -1) {
                 response.statusCode = 400
@@ -170,10 +196,14 @@ var server = http.createServer(function (request, response) {
             let isValid = false
             for (let i = 0; i < users.length; i++) {
                 if (users[i].email === email && users[i].password === password) {
+                    let sessionid = Math.random() * 10000
+                    sessions[sessionid] = {
+                        sign_in_email: email
+                    }
                     isValid = true
                     response.statusCode = 200
                     // Set-Cookie: <cookie-name>=<cookie-value>
-                    response.setHeader('Set-Cookie', `sign_in_email=${email}`)
+                    response.setHeader('Set-Cookie', `sessionid=${sessionid}`)
                     break
                 }
             }
