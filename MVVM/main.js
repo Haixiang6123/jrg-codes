@@ -10,6 +10,7 @@ function Model(options) {
     this.data = options.data
     this.resource = options.resource
 }
+
 Model.prototype.fetch = function (id) {
     return axios.get(`/${this.resource}/${id}`).then((response) => {
         this.data = response.data
@@ -27,7 +28,8 @@ function View({el, template}) {
     this.el = el
     this.template = template
 }
-View.prototype.render = function(data) {
+
+View.prototype.render = function (data) {
     let html = this.template
     for (let key in data) {
         html = html.replace(`__${key}__`, data[key])
@@ -44,63 +46,57 @@ let bookModel = new Model({
     resource: 'book'
 })
 
-let bookView = new View({
+let bookView = new Vue({
     el: '#app',
+    data() {
+        return {
+            book: {
+                name: '未命名',
+                number: 0,
+                id: ''
+            },
+            n: 1
+        }
+    },
+    created() {
+        bookModel.fetch(1).then(({data}) => {
+            this.book = bookModel.data
+        })
+    },
     template: `
     <div>
-      书名：<__name__>
-      数量：<span id="number">__number__</span>
-    </div>
-      
-    <div>
-      <button id="addOne">Add</button>
-      <button id="minusOne">Minus</button>
-      <button id="reset">Reset</button>
-    </div>`
-})
-
-let controller = {
-    init(options) {
-        let {view, model} = options
-        this.view = view
-        this.model = model
-
-        this.bindEvents()
-
-        this.model.fetch(1)
-            .then(({data}) => {
-                this.view.render(this.model.data)
+        <div>
+          书名：<{{book.name}}>
+          数量：<span id="number">{{book.number}}</span>
+        </div>
+        
+        <div>
+            <input v-model="n" type="text">
+        </div>
+         
+        <div>
+          <button @click="addOne">Add {{n}}</button>
+          <button @click="minusOne">Minus {{n}}</button>
+          <button @click="reset">Reset</button>
+        </div>
+    </div>`,
+    methods: {
+        addOne() {
+            bookModel.update(1, {number: this.book.number + (this.n-0)}).then(() => {
+                this.book = bookModel.data
             })
-    },
-    addOne() {
-        let oldNumber = $('#number').text()
-        let newNumber = oldNumber -0 + 1
-        this.model.update(1, {number: newNumber}).then(() => {
-            this.view.render(this.model.data)
-        })
-    },
-    minusOne() {
-        let oldNumber = $('#number').text()
-        let newNumber = oldNumber -0 - 1
-        this.model.update(1, {number: newNumber}).then(() => {
-            this.view.render(this.model.data)
-        })
-    },
-    reset() {
-        this.model.update(1, {number: 0}).then(() => {
-            this.view.render(this.model.data)
-        })
-    },
-    bindEvents() {
-        $(this.view.el).on('click', '#addOne', this.addOne.bind(this))
-        $(this.view.el).on('click', '#minusOne', this.minusOne.bind(this))
-        $(this.view.el).on('click', '#reset', this.reset.bind(this))
+        },
+        minusOne() {
+            bookModel.update(1, {number: this.book.number - (this.n-0)}).then(() => {
+                this.book = bookModel.data
+            })
+        },
+        reset() {
+            bookModel.update(1, {number: 0}).then(() => {
+                this.book = bookModel.data
+            })
+        },
     }
-}
-
-controller.init({
-    view: bookView,
-    model: bookModel
 })
 
 function fakeData() {
